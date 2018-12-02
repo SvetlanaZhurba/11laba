@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <string.h>
+#include <windows.h>
+
+int main()
+{
+	HANDLE hStdout;
+	FILE *fp;
+	char line[1000];
+	char buf[1000];
+	char word[100];
+	char *ptr;
+	char **func;
+	int i, j, k;
+	int cnt;
+	int start_cnt;
+	int flag;
+	int inner_flag;
+
+	WORD backgroundColor;
+	WORD textAttribute;
+
+	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	fp = fopen( "test.txt", "rt" );
+	if( fp == NULL )
+		return 1;
+
+	k = 0;
+	j = 0;
+	flag = 0;
+	inner_flag = 0;
+	func = (char**)malloc( 5 * sizeof(char*) );
+	backgroundColor = BACKGROUND_INTENSITY | BACKGROUND_BLUE | BACKGROUND_GREEN;
+
+	while( ptr = fgets( line, 1000, fp ) )
+	{		
+		cnt = 0;
+		strcpy( buf, line );
+		start_cnt = 0;
+
+		while( *ptr )
+		{
+			if( *ptr == '{' )
+			{
+				inner_flag++;
+				word[0] = '\0';
+			}
+			else if( *ptr == '}' )
+				inner_flag--;
+
+			if( *ptr >= 'A' && *ptr <= 'Z' || *ptr >= 'a' && *ptr <= 'z' || *ptr == '_' || *ptr >= '0' && *ptr <= '9'  )
+			{
+				i = 0;
+				while( *ptr >= 'A' && *ptr <= 'Z' || *ptr >= 'a' && *ptr <= 'z' || *ptr == '_' || *ptr >= '0' && *ptr <= '9' )
+				{
+					word[i] = *ptr;
+					ptr++;
+					cnt++;
+					i++;
+				}
+				start_cnt = cnt;
+				word[i] = '\0';
+				flag = 1;
+			}
+			else
+				flag = 0;
+
+			if( !inner_flag )
+			{
+				if( !( strcmp( word, "char" ) && strcmp( word, "int" ) && strcmp( word, "double" ) && strcmp( word, "long" ) 
+					  && strcmp( word, "float" ) && strcmp( word, "short" ) && strcmp( word, "void" ) ) )
+				{
+					while( *ptr != '(' )
+					{
+						if( *ptr == '\0' )
+							break;
+						ptr++;
+					}
+
+					if( *ptr == '\0' )
+							break;
+
+					while( *ptr == ' ' )
+						ptr--;
+
+					while( *ptr != ' ' )
+						ptr--;
+
+					ptr++;
+					
+					*(func + j) = (char*)malloc( 15 * sizeof(char) );
+
+					i = 0; 
+					while( *ptr >= 'A' && *ptr <= 'Z' || *ptr >= 'a' && *ptr <= 'z' || *ptr == '_' || *ptr >= '0' && *ptr <= '9' )
+					{
+						word[i] = *ptr;
+						ptr++;
+						i++;
+					}
+					word[i] = '\0';
+
+					strcpy( *(func + j), word );
+					j++;
+					break;
+				}
+			}
+			else
+			{
+				if( !flag )
+				{
+					while( ( *ptr < 'A' || *ptr > 'Z' ) && ( *ptr < 'a' || *ptr > 'z' ) && *ptr != '_' && ( *ptr < '0' || *ptr > '9' ) && *ptr != '\0' )
+					{
+						putchar( *ptr );
+						ptr++;
+					}
+					ptr--;
+				}
+				else 
+				{
+					for( i = 0; i < j; i++ )
+					{
+ 						if( !strcmp( *(func + i), word ) )
+						{
+							SetConsoleTextAttribute( hStdout, backgroundColor );
+							printf( "%s", word );
+							SetConsoleTextAttribute( hStdout, 7 );
+							word[0] = '\0';
+							ptr--;
+							break;
+						}
+				
+						if( i == (j - 1) )
+						{
+							printf( "%s", word );
+							ptr--;
+						}
+					}
+				}
+			}
+			ptr++;
+		}
+		if( !inner_flag )
+				printf( "%s", buf );
+	}
+
+	getchar();
+	return 0;
+}
