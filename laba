@@ -15,7 +15,6 @@ int main()
 	int inner_flag;
 
 	WORD backgroundColor;
-	WORD textAttribute;
 
 	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
