@@ -7,7 +7,6 @@ int main()
 	HANDLE hStdout;
 	FILE *fp;
 	char line[1000];
-	char buf[1000];
 	char word[100];
 	char *ptr;
 	char **func;
@@ -32,9 +31,7 @@ int main()
 	backgroundColor = BACKGROUND_INTENSITY | BACKGROUND_BLUE | BACKGROUND_GREEN;
 
 	while( ptr = fgets( line, 1000, fp ) )
-	{		
-		strcpy( buf, line );
-
+	{
 		while( *ptr )
 		{
 			if( *ptr == '{' )
@@ -136,7 +133,7 @@ int main()
 			ptr++;
 		}
 		if( !inner_flag )
-				printf( "%s", buf );
+				printf( "%s", line );
 	}
 
 	getchar();
