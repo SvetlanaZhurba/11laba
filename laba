@@ -12,8 +12,6 @@ int main()
 	char *ptr;
 	char **func;
 	int i, j, k;
-	int cnt;
-	int start_cnt;
 	int flag;
 	int inner_flag;
 
@@ -35,9 +33,7 @@ int main()
 
 	while( ptr = fgets( line, 1000, fp ) )
 	{		
-		cnt = 0;
 		strcpy( buf, line );
-		start_cnt = 0;
 
 		while( *ptr )
 		{
@@ -56,10 +52,8 @@ int main()
 				{
 					word[i] = *ptr;
 					ptr++;
-					cnt++;
 					i++;
 				}
-				start_cnt = cnt;
 				word[i] = '\0';
 				flag = 1;
 			}
