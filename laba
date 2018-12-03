@@ -71,7 +71,8 @@ int main()
 							break;
 						ptr++;
 					}
-
+                                        ptr--;
+					
 					if( *ptr == '\0' )
 							break;
 
